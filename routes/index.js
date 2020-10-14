@@ -70,6 +70,7 @@ const crawlerData = () => {
     }
     else if (temp[0] != data[0][1]){
       console.log("Have Changes Col 1");
+      temp[0] = data[0][1];
       sendMail();
     }
 
@@ -81,6 +82,7 @@ const crawlerData = () => {
     }
     else if (temp[1] != data[1][1]){
       console.log("Have Changes Col 2");
+      temp[1] = data[1][1];
       sendMail();
     }
 
@@ -92,6 +94,7 @@ const crawlerData = () => {
     }
     else if (temp[2] != data[2][1]){
       console.log("Have Changes Col 3");
+      temp[2] = data[2][1];
       sendMail();
     }
     // console.log(col1);
