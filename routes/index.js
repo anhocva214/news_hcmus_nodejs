@@ -5,33 +5,45 @@ const rp = require("request-promise");
 const cheerio = require("cheerio");
 const fs = require("fs");
 const nodemailer = require('nodemailer');
+const login = require("facebook-chat-api");
 
-const sendMail = ()=>{
 
-  const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
-    auth: {
-      user: "tackecon1551@gmail.com",
-      pass: "anho2001vnnt",
-    },
-  });
+// const sendMail = ()=>{
 
-  const mailOptions = {
-    from: 'tackecon1551@gmail.com',
-    to: 'anhocva214@gmail.com',
-    subject: 'News Hcmus',
-    text: 'Have Changes'
-  };
+//   const transporter = nodemailer.createTransport({
+//     host: "smtp.gmail.com",
+//     port: 587,
+//     secure: false,
+//     auth: {
+//       user: "tackecon1551@gmail.com",
+//       pass: "anho2001vnnt",
+//     },
+//   });
+
+//   const mailOptions = {
+//     from: 'tackecon1551@gmail.com',
+//     to: 'anhocva214@gmail.com',
+//     subject: 'News Hcmus',
+//     text: 'Have Changes'
+//   };
   
-  transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-    console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
+//   transporter.sendMail(mailOptions, function(error, info){
+//     if (error) {
+//     console.log(error);
+//     } else {
+//       console.log('Email sent: ' + info.response);
+//     }
+//   });
+// }
+
+const sendMessage = (msg) => {
+
+  login({ email: "0326255330", password: "hoan2001vnnt" }, (err, api) => {
+    if (err) return console.error(err);
+    const userId = '100015834401721';
+    api.sendMessage(msg, userId);
   });
+
 }
 
 var temp = ["test","",""];
@@ -74,7 +86,8 @@ const crawlerData = () => {
     else if (temp[0] != data[0][1]){
       console.log("Have Changes Col 1");
       temp[0] = data[0][1];
-      sendMail();
+      // sendMail();
+      sendMessage(temp[0]);
     }
 
     if (temp[1] == ""){
@@ -86,7 +99,8 @@ const crawlerData = () => {
     else if (temp[1] != data[1][1]){
       console.log("Have Changes Col 2");
       temp[1] = data[1][1];
-      sendMail();
+      // sendMail();
+      sendMessage(temp[1]);
     }
 
     if (temp[2] == ""){
@@ -98,7 +112,8 @@ const crawlerData = () => {
     else if (temp[2] != data[2][1]){
       console.log("Have Changes Col 3");
       temp[2] = data[2][1];
-      sendMail();
+      // sendMail();
+      sendMessage(temp[2]);
     }
     // console.log(col1);
 
