@@ -7,14 +7,17 @@ const fs = require("fs");
 const nodemailer = require('nodemailer');
 
 const sendMail = ()=>{
+
   const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
     auth: {
-      user: 'tackecon1551@gmail.com',
-      pass: 'anho2001vnnt' // naturally, replace both with your real credentials or an application-specific password
-    }
+      user: "tackecon1551@gmail.com",
+      pass: "anho2001vnnt",
+    },
   });
-  
+
   const mailOptions = {
     from: 'tackecon1551@gmail.com',
     to: 'anhocva214@gmail.com',
