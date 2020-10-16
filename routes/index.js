@@ -39,7 +39,7 @@ const login = require("facebook-chat-api");
 const sendMessage = (msg) => {
 
   login({ email: "0326255330", password: "hoan2001vnnt" }, (err, api) => {
-    if (err) return console.error(err);
+    if (err) return console.log(err);
     const userId = '100015834401721';
     api.sendMessage(msg, userId);
   });
