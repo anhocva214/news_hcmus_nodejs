@@ -31,7 +31,7 @@ const sendMail = ()=>{
   });
 }
 
-var temp = ["","",""];
+var temp = ["test","",""];
 const crawlerData = () => {
   const URL = `https://www.hcmus.edu.vn/sinh-vien`;
 
@@ -147,6 +147,7 @@ router.get('/', function (req, res, next) {
     // console.log(JSON.stringify(data));
 
     // Lưu dữ liệu về máy
+    // sendMail();
     res.render("index", { data: data });
   })();
 
