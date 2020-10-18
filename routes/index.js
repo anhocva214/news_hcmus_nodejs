@@ -72,7 +72,7 @@ const crawlerData = () => {
   const d = new Date();
   const month = parseInt(d.getMonth()) + 1;
   const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-  const TIME = 17 + "-" + month + "-" + d.getFullYear();
+  const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
 
   const options = {
     uri: URL,
