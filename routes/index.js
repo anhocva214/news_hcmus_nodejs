@@ -8,48 +8,71 @@ const nodemailer = require('nodemailer');
 const login = require("facebook-chat-api");
 
 
-// const sendMail = ()=>{
+var dataSendMail = [];
+const checkIsData = (item) => {
+  for (var i = 0; i <= dataSendMail.length; i++) {
+    if (i == dataSendMail.length) {
+      dataSendMail.push(item);
+      return false;
+    }
+    if (item == dataSendMail[i]) return true;
+  }
+}
+const sendMail = (news) => {
 
-//   const transporter = nodemailer.createTransport({
-//     host: "smtp.gmail.com",
-//     port: 587,
-//     secure: false,
-//     auth: {
-//       user: "tackecon1551@gmail.com",
-//       pass: "anho2001vnnt",
-//     },
-//   });
-
-//   const mailOptions = {
-//     from: 'tackecon1551@gmail.com',
-//     to: 'anhocva214@gmail.com',
-//     subject: 'News Hcmus',
-//     text: 'Have Changes'
-//   };
-  
-//   transporter.sendMail(mailOptions, function(error, info){
-//     if (error) {
-//     console.log(error);
-//     } else {
-//       console.log('Email sent: ' + info.response);
-//     }
-//   });
-// }
-
-const sendMessage = (msg) => {
-  const email = "0326255330";
-  const password = "hoan2001vnnt";
-  login({ email: email, password: password }, (err, api) => {
-    if (err) throw err;
-    const userId = '100015834401721';
-    api.sendMessage(msg, userId);
+  const transporter = nodemailer.createTransport({
+    host: "smtp.gmail.com",
+    port: 587,
+    secure: false,
+    auth: {
+      user: "newshcmus@gmail.com",
+      pass: "hoan2001vnnt",
+    },
   });
+
+  const mailOptions = {
+    from: 'newshcmus@gmail.com',
+    to: 'anhocva214@gmail.com',
+    subject: 'News Hcmus',
+    text: news
+  };
+
+  if (checkIsData(news) == false) {
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error);
+      } else {
+        console.log('Email sent: ' + info.response);
+      }
+    });
+    // console.log("Send MAil: ", news);
+  }
+
 
 }
 
-var temp = ["test","",""];
+// const sendMessage = (msg) => {
+//   const email = "0326255330";
+//   const password = "hoan2001vnnt";
+//   login({ email: email, password: password }, (err, api) => {
+//     if (err) throw err;
+//     const userId = '100009412174973';
+//     api.sendMessage(msg, userId);
+//   });
+
+// }
+
+const handleTimeText = (timeText) => {
+  timeText = timeText.replace("(", "");
+  timeText = timeText.replace(")", "");
+  return timeText.trim();
+}
+
 const crawlerData = () => {
+  const d = new Date();
+  const month = parseInt(d.getMonth()) + 1;
   const URL = `https://www.hcmus.edu.vn/sinh-vien`;
+  const TIME = 17 + "-" + month + "-" + d.getFullYear();
 
   const options = {
     uri: URL,
@@ -72,51 +95,17 @@ const crawlerData = () => {
     for (var i = 0; i < newsColList.length; i++) {
       var newsColItem = $(newsColList[i]);
       var newsItem = newsColItem.find(".mod-articles-category-title");
+      var timeItem = newsColItem.find(".mod-articles-category-date");
       // console.log($(newsItem[i]).text().trim());
+
       for (var j = 0; j < newsItem.length; j++) {
-        data[i].push($(newsItem[j]).text().trim());
+        if (handleTimeText($(timeItem[j]).text().trim()) == TIME)
+          sendMail($(newsItem[j]).text().trim());
       }
     }
 
-    if (temp[0] == ""){
-      temp[0] = data[0][1];
-    }
-    else if (temp[0] == data[0][1]){
-      console.log("Not Changes col 1");
-    }
-    else if (temp[0] != data[0][1]){
-      console.log("Have Changes Col 1");
-      temp[0] = data[0][1];
-      // sendMail();
-      sendMessage(temp[0]);
-    }
+    console.log(TIME);
 
-    if (temp[1] == ""){
-      temp[1] = data[1][1];
-    }
-    else if (temp[1] == data[1][1]){
-      console.log("Not Changes col 2");
-    }
-    else if (temp[1] != data[1][1]){
-      console.log("Have Changes Col 2");
-      temp[1] = data[1][1];
-      // sendMail();
-      sendMessage(temp[1]);
-    }
-
-    if (temp[2] == ""){
-      temp[2] = data[2][1];
-    }
-    else if (temp[2] == data[2][1]){
-      console.log("Not Changes col 3");
-    }
-    else if (temp[2] != data[2][1]){
-      console.log("Have Changes Col 3");
-      temp[2] = data[2][1];
-      // sendMail();
-      sendMessage(temp[2]);
-    }
-    // console.log(col1);
 
     // console.log(data);
   })();
@@ -130,7 +119,10 @@ setInterval(() => {
 /* GET home page. */
 router.get('/', function (req, res, next) {
 
+  const d = new Date();
+  const month = parseInt(d.getMonth()) + 1;
   const URL = `https://www.hcmus.edu.vn/sinh-vien`;
+  const TIME = 17 + "-" + month + "-" + d.getFullYear();
 
   const options = {
     uri: URL,
@@ -141,8 +133,6 @@ router.get('/', function (req, res, next) {
   };
 
   var data = [[], [], []];
-
-
   (async function crawler() {
     try {
       // Lấy dữ liệu từ trang crawl đã được parseDOM
@@ -155,27 +145,20 @@ router.get('/', function (req, res, next) {
     for (var i = 0; i < newsColList.length; i++) {
       var newsColItem = $(newsColList[i]);
       var newsItem = newsColItem.find(".mod-articles-category-title");
+      var timeItem = newsColItem.find(".mod-articles-category-date");
       // console.log($(newsItem[i]).text().trim());
+
       for (var j = 0; j < newsItem.length; j++) {
-        data[i].push($(newsItem[j]).text().trim());
+        if (handleTimeText($(timeItem[j]).text().trim()) == TIME)
+          data[i].push($(newsItem[j]).text().trim());
       }
     }
 
-    // console.log(col1);
+    console.log(TIME);
 
-    // console.log(JSON.stringify(data));
 
-    // Lưu dữ liệu về máy
-    // sendMail();
     res.render("index", { data: data });
   })();
-
-  // var x=0;
-  // setInterval(() => {
-  //   x++;
-  //   res.render("index", {data: data, count: x});
-  //   console.log(x);
-  // }, 3000);
 
 });
 
