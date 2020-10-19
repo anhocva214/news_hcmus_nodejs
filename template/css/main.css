@@ -1,0 +1,138 @@
+@import url("https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+header nav {
+  padding: 0 50px !important;
+}
+
+header nav img {
+  width: 250px;
+}
+
+header nav .nav-link {
+  padding: 0 !important;
+  margin-right: 20px;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #083b66;
+  font-family: 'Lato', sans-serif;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  position: relative;
+}
+
+header nav .nav-link::before {
+  content: "";
+  display: block;
+  height: 2px;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 0;
+  background-color: #216aaa;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  opacity: 0;
+}
+
+header nav .nav-link:hover, header nav .nav-link:active {
+  color: #216aaa !important;
+}
+
+header nav .nav-link:hover::before, header nav .nav-link:active::before {
+  opacity: 1;
+  width: 75%;
+}
+
+header nav .nav-item.active .nav-link {
+  color: #216aaa !important;
+}
+
+header nav .nav-item.active .nav-link::before {
+  opacity: 1;
+  width: 75%;
+}
+
+header nav .account-section {
+  position: relative;
+}
+
+header nav .account-section .text {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #083b66;
+  font-family: 'Lato', sans-serif;
+  border: 2px solid #216aaa;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+
+header nav .account-section .box-description {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background-color: #0890cf;
+  color: #fff;
+  width: 100%;
+  text-align: center;
+  visibility: hidden;
+  opacity: 0;
+  z-index: -1;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  -webkit-transform: translateY(20px);
+          transform: translateY(20px);
+  -webkit-box-shadow: 5px 6px 22px 0px #216aaa69;
+          box-shadow: 5px 6px 22px 0px #216aaa69;
+}
+
+header nav .account-section .box-description .item {
+  padding: 10px 5px;
+  font-weight: 600;
+  -webkit-transition: all .3s;
+  transition: all .3s;
+  cursor: pointer;
+}
+
+header nav .account-section .box-description .item:hover, header nav .account-section .box-description .item:active {
+  background-color: #216aaa;
+}
+
+header nav .account-section:hover .box-description, header nav .account-section:active .box-description {
+  visibility: visible;
+  opacity: 1;
+  z-index: 1;
+  -webkit-transform: translateY(0px);
+          transform: translateY(0px);
+}
+
+main section.form-email {
+  width: 70%;
+  margin: 0 auto;
+  padding: 30px 0;
+}
+
+main section.form-email .form-group label {
+  font-size: 1.2rem;
+}
+
+main section.form-email p {
+  font-size: 1.2rem;
+  margin: 0;
+}
+
+main section.form-email .form-check-input {
+  width: 20px;
+  height: 20px;
+}
+
+main section.form-email span {
+  vertical-align: middle;
+  margin-left: 10px;
+}
+/*# sourceMappingURL=main.css.map */

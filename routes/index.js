@@ -32,7 +32,7 @@ const sendMail = (news) => {
 
   const mailOptions = {
     from: 'newshcmus@gmail.com',
-    to: 'anhocva214@gmail.com',
+    to: 'anhocva214@gmail.com, bacabeo@gmail.com, dpthienphu@gmail.com',
     subject: 'News Hcmus',
     text: news
   };
@@ -50,15 +50,6 @@ const sendMail = (news) => {
 
 
 }
-
-// const sendMessage = (msg) => {
-//   const email = "0326255330";
-//   const password = "hoan2001vnnt";
-//   login({ email: email, password: password }, (err, api) => {
-//     if (err) throw err;
-//     const userId = '100009412174973';
-//     api.sendMessage(msg, userId);
-//   });
 
 // }
 
@@ -122,6 +113,7 @@ router.get('/', function (req, res, next) {
   const month = parseInt(d.getMonth()) + 1;
   const URL = `https://www.hcmus.edu.vn/sinh-vien`;
   const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
+  const data = [[],[],[]];
 
   const options = {
     uri: URL,
@@ -159,5 +151,9 @@ router.get('/', function (req, res, next) {
   })();
 
 });
+
+router.post('/register', (req, res)=>{
+  console.log(req.body);
+})
 
 module.exports = router;

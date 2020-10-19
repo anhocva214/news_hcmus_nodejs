@@ -1,0 +1,126 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+
+header{
+    nav{
+        padding: 0 50px !important;
+        img{
+            width: 250px;
+        }
+        .nav-link{
+            padding: 0 !important;
+            margin-right: 20px;
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: #083b66;
+            font-family: 'Lato', sans-serif;
+            transition: all .3s;
+            position: relative;
+            &::before{
+                content: "";
+                display: block;
+                height: 2px;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 0;
+                background-color: #216aaa;
+                transition: all .3s;
+                opacity: 0;
+            }
+            &:hover, &:active{
+                &::before{
+                    opacity: 1;
+                    width: 75%;
+                }
+                color: #216aaa !important;
+            }
+        }
+        .nav-item.active{
+            .nav-link{
+                color: #216aaa !important;
+                &::before{
+                    opacity: 1;
+                    width: 75%;
+                }
+            }
+        }
+        .account-section{
+            position: relative;
+            .text{
+                font-size: 1.1rem;
+                font-weight: 600;
+                color: #083b66;
+                font-family: 'Lato', sans-serif;
+                border: 2px solid #216aaa;
+                padding: 5px 20px;
+                cursor: pointer;
+            }
+            .box-description{
+                position: absolute;
+                top: 100%;
+                right: 0;
+                background-color: #0890cf;
+                color: #fff;
+                width: 100%;
+                text-align: center;
+                visibility: hidden;
+                opacity: 0;
+                z-index: -1;
+                transition: all .3s;
+                transform: translateY(20px);
+                .item{
+                    padding: 10px 5px;
+                    font-weight: 600;
+                    transition: all .3s;
+                    cursor: pointer;
+                    &:hover, &:active{
+                        // color:#00f3ff;
+                        background-color: #216aaa;
+                    }
+                }
+                box-shadow: 5px 6px 22px 0px #216aaa69;
+            }
+            &:hover,&:active{
+                .box-description{
+                    visibility: visible;
+                    opacity: 1;
+                    z-index: 1;
+                    transform: translateY(0px);
+                }
+               
+            }
+        }
+    }
+}
+
+main{
+    section.form-email{
+        width: 70%;
+        margin: 0 auto;
+        padding: 30px 0;
+        .form-group{
+            label{
+                font-size: 1.2rem;
+            }
+        }
+        p{
+            font-size: 1.2rem;
+            margin: 0;
+        }
+        .form-check-input{
+            width: 20px;
+            height: 20px;
+        }
+        span{
+            vertical-align: middle;
+            margin-left: 10px;
+        }
+    }
+}
