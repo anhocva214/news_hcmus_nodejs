@@ -82,7 +82,6 @@ const crawlerData = () => {
     },
   };
 
-  var data = [[], [], []];
   (async function crawler() {
     try {
       // Lấy dữ liệu từ trang crawl đã được parseDOM
