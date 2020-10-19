@@ -121,7 +121,7 @@ router.get('/', function (req, res, next) {
   const d = new Date();
   const month = parseInt(d.getMonth()) + 1;
   const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-  const TIME = 17 + "-" + month + "-" + d.getFullYear();
+  const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
 
   const options = {
     uri: URL,
@@ -131,7 +131,6 @@ router.get('/', function (req, res, next) {
     },
   };
 
-  var data = [[], [], []];
   (async function crawler() {
     try {
       // Lấy dữ liệu từ trang crawl đã được parseDOM
