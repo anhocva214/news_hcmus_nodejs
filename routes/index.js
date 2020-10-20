@@ -21,18 +21,18 @@ const checkIsData = (item) => {
 const sendMail = (news) => {
 
   const transporter = nodemailer.createTransport({
-    host: "smtp.gmail.com",
-    port: 587,
-    secure: false,
+    host: "smtp.zoho.com",
+    port: 465,
+    secure: true,
     auth: {
-      user: "newshcmus@gmail.com",
-      pass: "hoan2001vnnt",
+      user: "ho.an@highesthabitleadership.com",
+      pass: "@nho2001vnnt",
     },
   });
-
+  // bacabeo@gmail.com, dpthienphu@gmail.com
   const mailOptions = {
-    from: 'newshcmus@gmail.com',
-    to: 'anhocva214@gmail.com, bacabeo@gmail.com, dpthienphu@gmail.com',
+    from: 'ho.an@highesthabitleadership.com',
+    to: 'anhocva214@gmail.com',
     subject: 'News Hcmus',
     text: news
   };
@@ -178,5 +178,8 @@ router.post('/login', async (req, res)=>{
   console.log(req.body);
   res.send({error: false});
 })
+
+
+
 
 module.exports = router;
