@@ -14,40 +14,7 @@
 
 <body>
 
-  <table class="table table-striped table-inverse table-responsive">
-    <thead class="thead-inverse">
-      <tr>
-        <th>Thông báo của Phòng Đào Tạo</th>
-        <th>Thông báo của Phòng Công tác sinh viên</th>
-        <th>THÔNG BÁO KHÁC</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td scope="row">
-          <ul>
-            <% data[0].forEach((value)=>{ %>
-            <li> <%= value %> </li>
-            <% }) %>
-          </ul>
-        </td>
-        <td>
-          <ul>
-            <% data[1].forEach((value)=>{ %>
-            <li> <%= value %> </li>
-            <% }) %>
-          </ul>
-        </td>
-        <td>
-          <ul>
-            <% data[2].forEach((value)=>{ %>
-            <li> <%= value %> </li>
-            <% }) %>
-          </ul>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+  <h1><%= data %></h1>
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"

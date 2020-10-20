@@ -22,48 +22,7 @@ const verifyIdentity = (token, tokenKey) => {
 }
 
 router.get('/', function (req, res, next) {
-
-  const d = new Date();
-  const month = parseInt(d.getMonth()) + 1;
-  const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-  const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
-  const data = [[], [], []];
-
-  const options = {
-    uri: URL,
-    transform: function (body) {
-      //Khi lấy dữ liệu từ trang thành công nó sẽ tự động parse DOM
-      return cheerio.load(body);
-    },
-  };
-
-  (async function crawler() {
-    try {
-      // Lấy dữ liệu từ trang crawl đã được parseDOM
-      var $ = await rp(options);
-    } catch (error) {
-      return error;
-    }
-
-    const newsColList = $(".category-module");
-    for (var i = 0; i < newsColList.length; i++) {
-      var newsColItem = $(newsColList[i]);
-      var newsItem = newsColItem.find(".mod-articles-category-title");
-      var timeItem = newsColItem.find(".mod-articles-category-date");
-      // console.log($(newsItem[i]).text().trim());
-
-      for (var j = 0; j < newsItem.length; j++) {
-        if (handleTimeText($(timeItem[j]).text().trim()) == TIME)
-          data[i].push($(newsItem[j]).text().trim());
-      }
-    }
-
-    console.log(TIME);
-
-
-    res.render("index", { data: data });
-  })();
-
+  res.render("index", { data: "Hello World" });
 });
 
 router.post('/register', async (req, res) => {
