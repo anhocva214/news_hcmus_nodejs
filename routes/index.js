@@ -1,11 +1,11 @@
 var express = require('express');
 var router = express.Router();
-var request = require("request");
 const rp = require("request-promise");
 const cheerio = require("cheerio");
-const fs = require("fs");
 const nodemailer = require('nodemailer');
-const login = require("facebook-chat-api");
+const database = require('./database');
+const CryptoJS = require("crypto-js");
+
 
 
 var dataSendMail = [];
@@ -25,8 +25,8 @@ const sendMail = (news) => {
     port: 587,
     secure: false,
     auth: {
-      user: "newshcmus@gmail.com",
-      pass: "hoan2001vnnt",
+      user: "tackecon1551@gmail.com",
+      pass: "anho2001vnnt",
     },
   });
 
@@ -113,7 +113,7 @@ router.get('/', function (req, res, next) {
   const month = parseInt(d.getMonth()) + 1;
   const URL = `https://www.hcmus.edu.vn/sinh-vien`;
   const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
-  const data = [[],[],[]];
+  const data = [[], [], []];
 
   const options = {
     uri: URL,
@@ -152,8 +152,31 @@ router.get('/', function (req, res, next) {
 
 });
 
-router.post('/register', (req, res)=>{
+router.post('/register', async (req, res) => {
+  var account = req.body;
+  account.password = CryptoJS.MD5(account.password, '999999999').toString();
+  console.log(account.email);
+  var queryEmail = await database.query({ email: account.email }, 'account');
+
+  if (queryEmail.length > 0) {
+    res.send({ error: true, msg: "Email is exist" })
+  }
+  else {
+    var result = await database.insert(account, 'account');
+    if (result.error == false) {
+      res.send({ error: false, msg: "Register success" })
+    }
+    else {
+      res.send({ error: true, msg: "Lỗi hệ thống!" })
+    }
+  }
+  // res.send({ error: false , msg: "Register success"})
+
+})
+
+router.post('/login', async (req, res)=>{
   console.log(req.body);
+  res.send({error: false});
 })
 
 module.exports = router;
