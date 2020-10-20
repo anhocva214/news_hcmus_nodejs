@@ -25,8 +25,8 @@ const sendMail = (news) => {
     port: 587,
     secure: false,
     auth: {
-      user: "tackecon1551@gmail.com",
-      pass: "anho2001vnnt",
+      user: "newshcmus@gmail.com",
+      pass: "hoan2001vnnt",
     },
   });
 
