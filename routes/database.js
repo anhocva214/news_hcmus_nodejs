@@ -35,7 +35,58 @@ const query = (data, collection) => {
     })
 }
 
+const update = (dataQuery, dataNew, collection) => {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db(DB);
+            var myquery = dataQuery;
+            var newvalues = { $set: dataNew };
+            dbo.collection(collection).updateOne(myquery, newvalues, function (err, res) {
+                if (err) {
+                    console.log(err);
+                    resolve(false);
+                };
+                resolve(true);
+                console.log("1 document updated");
+                db.close();
+            });
+        });
+    })
+}
+
+const querySourceNews = (sourceNews) => {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db(DB);
+            dbo.collection("account").find({}).toArray( function (err, result) {
+                if (err) throw err;
+                var dataEmail = [];
+                // console.log(result);
+                for (var i=0; i<=result.length; i++){
+                    if (i == result.length){
+                        // console.log('dataEmail: ',dataEmail);
+                        resolve(dataEmail);
+                    }
+                    else{
+                        result[i].sourceNews.map((value)=>{
+                            // console.log(value);
+                            if (value == sourceNews){
+                                dataEmail.push(result[i].email);
+                            }
+                        })
+                    }
+                }
+                db.close();
+            });
+        });
+    })
+}
+
 module.exports = {
     insert: insert,
-    query: query
+    query: query,
+    update: update,
+    querySourceNews: querySourceNews
 }

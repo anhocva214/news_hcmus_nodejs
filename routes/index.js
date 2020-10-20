@@ -1,112 +1,26 @@
 var express = require('express');
 var router = express.Router();
-const rp = require("request-promise");
-const cheerio = require("cheerio");
-const nodemailer = require('nodemailer');
 const database = require('./database');
 const CryptoJS = require("crypto-js");
+const jwt = require('jsonwebtoken');
+const { v1: uuidv1 } = require('uuid');
+
+const HASH_KEY = '999999999';
 
 
-
-var dataSendMail = [];
-const checkIsData = (item) => {
-  for (var i = 0; i <= dataSendMail.length; i++) {
-    if (i == dataSendMail.length) {
-      dataSendMail.push(item);
-      return false;
-    }
-    if (item == dataSendMail[i]) return true;
-  }
-}
-const sendMail = (news) => {
-
-  const transporter = nodemailer.createTransport({
-    host: "smtp.zoho.com",
-    port: 465,
-    secure: true,
-    auth: {
-      user: "ho.an@highesthabitleadership.com",
-      pass: "@nho2001vnnt",
-    },
-  });
-  // bacabeo@gmail.com, dpthienphu@gmail.com
-  const mailOptions = {
-    from: 'ho.an@highesthabitleadership.com',
-    to: 'anhocva214@gmail.com, bacabeo@gmail.com, dpthienphu@gmail.com',
-    subject: 'News Hcmus',
-    text: news
-  };
-
-  if (checkIsData(news) == false) {
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log('Email sent: ' + info.response);
+const verifyIdentity = (token, tokenKey) => {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, tokenKey, function (err, decoded) {
+      if (err) {
+        resolve(false)
+      }
+      else {
+        resolve(true);
       }
     });
-    // console.log("Send MAil: ", news);
-  }
-
-
+  })
 }
 
-// }
-
-const handleTimeText = (timeText) => {
-  timeText = timeText.replace("(", "");
-  timeText = timeText.replace(")", "");
-  return timeText.trim();
-}
-
-const crawlerData = () => {
-  const d = new Date();
-  const month = parseInt(d.getMonth()) + 1;
-  const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-  const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
-
-  const options = {
-    uri: URL,
-    transform: function (body) {
-      //Khi lấy dữ liệu từ trang thành công nó sẽ tự động parse DOM
-      return cheerio.load(body);
-    },
-  };
-
-  (async function crawler() {
-    try {
-      // Lấy dữ liệu từ trang crawl đã được parseDOM
-      var $ = await rp(options);
-    } catch (error) {
-      return error;
-    }
-
-    const newsColList = $(".category-module");
-    for (var i = 0; i < newsColList.length; i++) {
-      var newsColItem = $(newsColList[i]);
-      var newsItem = newsColItem.find(".mod-articles-category-title");
-      var timeItem = newsColItem.find(".mod-articles-category-date");
-      // console.log($(newsItem[i]).text().trim());
-
-      for (var j = 0; j < newsItem.length; j++) {
-        if (handleTimeText($(timeItem[j]).text().trim()) == TIME)
-          sendMail($(newsItem[j]).text().trim());
-      }
-    }
-
-    console.log(TIME);
-
-
-    // console.log(data);
-  })();
-
-}
-
-setInterval(() => {
-  crawlerData();
-}, 3000);
-
-/* GET home page. */
 router.get('/', function (req, res, next) {
 
   const d = new Date();
@@ -154,8 +68,10 @@ router.get('/', function (req, res, next) {
 
 router.post('/register', async (req, res) => {
   var account = req.body;
-  account.password = CryptoJS.MD5(account.password, '999999999').toString();
-  console.log(account.email);
+  account.password = CryptoJS.MD5(account.password, HASH_KEY).toString();
+  account.tokenKey = uuidv1();
+  account.sourceNews = [];
+
   var queryEmail = await database.query({ email: account.email }, 'account');
 
   if (queryEmail.length > 0) {
@@ -174,12 +90,87 @@ router.post('/register', async (req, res) => {
 
 })
 
-router.post('/login', async (req, res)=>{
-  console.log(req.body);
-  res.send({error: false});
+router.post('/login', async (req, res) => {
+  var account = req.body;
+  account.password = CryptoJS.MD5(account.password, HASH_KEY).toString();
+  var queryAccount = await database.query({ email: account.email, password: account.password }, 'account');
+  // console.log(queryAccount[0]);
+
+  if (queryAccount.length > 0) {
+    account = queryAccount[0];
+    var token = jwt.sign({
+      data: account.email
+    }, account.tokenKey, { expiresIn: 60 * 60 });
+    res.send({ error: false, email: account.email, sourceNews: account.sourceNews, token: token, tokenKey: account.tokenKey, msg: "Login success!" });
+  }
+  else {
+    res.send({ error: true, msg: "Login fail!" });
+  }
+  // res.send({error: false})
 })
 
+router.post('/verify/', async (req, res) => {
+  jwt.verify(req.body.token, req.body.tokenKey, async function (err, decoded) {
+    if (err) {
+      res.send({error: true})
+    }
+    else{
+      var account = await database.query({tokenKey: req.body.tokenKey}, 'account');
+      // console.log(account[0]);
+      if (account.length > 0){
+        res.send({email: account[0].email, sourceNews: account[0].sourceNews, error: false});
+      }
+      else{
+        res.send({error: true});
+      }
+    }
+  });
+})
 
+router.post('/editemail', async (req, res)=>{
+  if (await verifyIdentity(req.body.token, req.body.tokenKey) == true){
+    var update = await database.update({tokenKey: req.body.tokenKey}, {email: req.body.emailNew}, 'account');
+    if (update == true){
+      res.send({ error: false, msg: "Save email sucess!"})
+    }
+    else{
+      res.send({ error: true, msg: "Error System"})
+    }
+  }
+  else{
+    res.send({ error: true, msg: "You need login again, please"})
+  }
+})
 
+router.post('/changepassword', async (req, res) => {
+  if (await verifyIdentity(req.body.token, req.body.tokenKey) == true) {
+    var password = CryptoJS.MD5(req.body.passwordNew, HASH_KEY).toString();
+    var update = await database.update({ tokenKey: req.body.tokenKey }, { password: password }, 'account');
+    if (update == true) {
+      res.send({ error: false, msg: "Change password sucess!" })
+    }
+    else {
+      res.send({ error: true, msg: "Error System" })
+    }
+  }
+  else {
+    res.send({ error: true, msg: "You need login again, please" })
+  }
+})
+
+router.post('/updatesourcenews', async (req, res) => {
+  if (await verifyIdentity(req.body.token, req.body.tokenKey) == true) {
+    var update = await database.update({ tokenKey: req.body.tokenKey }, { sourceNews: req.body.sourceNews }, 'account');
+    if (update == true) {
+      res.send({ error: false, msg: "Update source news sucess!" })
+    }
+    else {
+      res.send({ error: true, msg: "Error System" })
+    }
+  }
+  else {
+    res.send({ error: true, msg: "You need login again, please" })
+  }
+})
 
 module.exports = router;

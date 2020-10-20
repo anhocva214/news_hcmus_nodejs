@@ -20,6 +20,7 @@
     "morgan": "~1.9.1",
     "nodemailer": "^6.4.14",
     "request": "^2.88.2",
-    "request-promise": "^4.2.6"
+    "request-promise": "^4.2.6",
+    "uuid": "^8.3.1"
   }
 }
