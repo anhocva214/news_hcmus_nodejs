@@ -32,7 +32,7 @@ const sendMail = (news) => {
   // bacabeo@gmail.com, dpthienphu@gmail.com
   const mailOptions = {
     from: 'ho.an@highesthabitleadership.com',
-    to: 'anhocva214@gmail.com',
+    to: 'anhocva214@gmail.com, bacabeo@gmail.com, dpthienphu@gmail.com',
     subject: 'News Hcmus',
     text: news
   };
