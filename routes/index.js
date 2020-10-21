@@ -4,6 +4,8 @@ const database = require('./database');
 const CryptoJS = require("crypto-js");
 const jwt = require('jsonwebtoken');
 const { v1: uuidv1 } = require('uuid');
+const nodemailer = require('nodemailer');
+
 
 const HASH_KEY = '999999999';
 
@@ -19,6 +21,36 @@ const verifyIdentity = (token, tokenKey) => {
       }
     });
   })
+}
+
+const sendEmail = (message, toEmail) => {
+  const transporter = nodemailer.createTransport({
+    host: "smtp.zoho.com",
+    port: 465,
+    secure: true,
+    auth: {
+      user: "ho.an@highesthabitleadership.com",
+      pass: "@nho2001vnnt",
+    },
+  });
+
+  const mailOptions = {
+    from: 'ho.an@highesthabitleadership.com',
+    to: toEmail,
+    subject: 'Reset Password For Your NewsTool Account ',
+    html: message
+  };
+
+
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log('Email sent: ' + info.response);
+    }
+  });
+  // console.log("Send MAil: ", news);
+
 }
 
 router.get('/', function (req, res, next) {
@@ -137,8 +169,12 @@ router.post('/forgetpasswordrequest', async (req, res)=>{
   var isEmailExist = await database.query({email: email}, 'account');
   if (isEmailExist.length > 0){
     var code = uuidv1();
-    console.log(code);
-    res.send({error: true, msg: "Code authentic sent to your email"})
+    codeAuthentic = code.split("-")[0];
+    var tokenAuthentic = jwt.sign({
+      data: {codeAuthentic: codeAuthentic, email: email}
+    }, codeAuthentic, { expiresIn: 60 * 60 });
+    sendEmail(`<h3>Code Authentic: `+codeAuthentic+` </h3>`, email);
+    res.send({error: false, msg: "Code authentic sent to your email", tokenAuthentic: tokenAuthentic})
   }
   else{
     res.send({error: true, msg: "Email not exist"})
@@ -146,7 +182,26 @@ router.post('/forgetpasswordrequest', async (req, res)=>{
 })
 
 router.post('/forgetpassword', async (req, res)=>{
-
+  jwt.verify(req.body.tokenAuthentic, req.body.codeAuthentic, async function (err, decoded) {
+    if (err) {
+      res.send({error: true, msg: "Code Authentic expired"})
+    }
+    else{
+      if (decoded.data.codeAuthentic == req.body.codeAuthentic && decoded.data.email == req.body.email){
+        var password = CryptoJS.MD5(req.body.passwordNew, HASH_KEY).toString();
+        var update = await database.update({ email: req.body.email }, { password: password }, 'account');
+        if (update == true){
+          res.send({ error: false, msg: "Update password success!"})
+        }
+        else{
+          res.send({ error: false, msg: "Error System"})
+        }
+      }
+      else{
+        res.send({error: true, msg: "Code authentic invalid or email invalid"})
+      }
+    }
+  });
 })
 
 module.exports = router;
