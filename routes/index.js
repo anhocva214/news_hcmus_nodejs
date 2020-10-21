@@ -22,7 +22,7 @@ const verifyIdentity = (token, tokenKey) => {
 }
 
 router.get('/', function (req, res, next) {
-  res.render("index", { data: "Hello World" });
+  res.render("index", { data: "Connect Success!" });
 });
 
 router.post('/register', async (req, res) => {
@@ -130,6 +130,23 @@ router.post('/updatesourcenews', async (req, res) => {
   else {
     res.send({ error: true, msg: "You need login again, please" })
   }
+})
+
+router.post('/forgetpasswordrequest', async (req, res)=>{
+  const email = req.body.email;
+  var isEmailExist = await database.query({email: email}, 'account');
+  if (isEmailExist.length > 0){
+    var code = uuidv1();
+    console.log(code);
+    res.send({error: true, msg: "Code authentic sent to your email"})
+  }
+  else{
+    res.send({error: true, msg: "Email not exist"})
+  }
+})
+
+router.post('/forgetpassword', async (req, res)=>{
+
 })
 
 module.exports = router;
