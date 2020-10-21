@@ -113,9 +113,9 @@ const crawlerData = () => {
 
 
 
-// setInterval(() => {
-//   crawlerData();
-// }, 3000);
+setInterval(() => {
+  crawlerData();
+}, 3000);
 
 
 module.exports = router;
