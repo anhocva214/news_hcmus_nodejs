@@ -138,8 +138,8 @@ const crawlerData = () => {
 
             for (var j = 0; j < newsItem.length; j++) {
                 if (handleTimeText($(timeItem[j]).text().trim()) == TIME)
-                    // sendMail($(newsItem[j]).text().trim());
-                    console.log($(newsItem[j]).text().trim())
+                    sendMail($(newsItem[j]).text().trim());
+                    // console.log($(newsItem[j]).text().trim())
             }
         }
 
