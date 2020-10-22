@@ -49,7 +49,7 @@ const sendMail = async (news) => {
     };
 
     if (checkIsData(news) == false) {
-        console.log(toEmail);
+        // console.log(toEmail);
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 console.log(error);
@@ -66,6 +66,45 @@ const handleTimeText = (timeText) => {
     timeText = timeText.replace("(", "");
     timeText = timeText.replace(")", "");
     return timeText.trim();
+}
+
+const compareDataNewsFeed = (dataOld, dataNew)=>{
+    var indexKey = 0;
+    dataNew.forEach((value, index)=>{
+        if (value == dataOld[0]) indexKey = index
+    })
+
+    if (indexKey == 0){
+        return {status: false}
+    }
+    else{
+        var tempData = [];
+        for (var i=0; i<indexKey; i++){
+            tempData.push(dataNew[i]);
+        } 
+        return {status: true, data: tempData}
+    }
+}
+
+const handleDataNewsFeed = async (dataNew) => {
+    var newsFeedData = await database.queryAll('newsfeed');
+    // console.log(newsFeedData);
+    if (newsFeedData.length == 0){
+        await database.insert({data: dataNew}, 'newsfeed');
+    }
+    else{
+        newsFeedData[0].data.forEach(async (value, index)=>{
+            var resultCompare = compareDataNewsFeed(value, dataNew[index]);
+            if (resultCompare.status == true){
+                resultCompare.data.forEach((value)=>{
+                    sendMail(value);
+                })
+                var temp = [...newsFeedData[0].data];
+                temp[index] = dataNew[index];
+                await database.update({data: newsFeedData[0].data}, {data: temp}, 'newsfeed');
+            }
+        })
+    }
 }
 
 const crawlerData = () => {
@@ -99,10 +138,28 @@ const crawlerData = () => {
 
             for (var j = 0; j < newsItem.length; j++) {
                 if (handleTimeText($(timeItem[j]).text().trim()) == TIME)
-                    sendMail($(newsItem[j]).text().trim());
+                    // sendMail($(newsItem[j]).text().trim());
+                    console.log($(newsItem[j]).text().trim())
             }
         }
 
+        const newsListFeed = $(".newsfeed");
+        var data = [];
+        // console.log($(newsListFeed[0]).find("span a")[0].children[0].data.trim());
+        for (var i = 1; i < newsListFeed.length; i++){
+            var temp = [];
+            var newsItemFeed = $(newsListFeed[i]).find("span a");
+            // console.log(newsItemFeed[0])
+            for (var j = 0; j < newsItemFeed.length; j++) {
+                // console.log(newsItemFeed[j].children[0].data.trim())
+                temp.push(newsItemFeed[j].children[0].data.trim());
+            }
+            data.push(temp);
+        }
+
+        // console.log(data)
+        
+        handleDataNewsFeed(data);
         console.log(TIME);
 
 

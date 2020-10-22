@@ -84,9 +84,27 @@ const querySourceNews = (sourceNews) => {
     })
 }
 
+
+const queryAll = (collection) => {
+    return new Promise((resolve, reject) => {
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db(DB);
+            dbo.collection(collection).find({}).toArray( function (err, result) {
+                if (err) throw err;
+                resolve(result);
+                db.close();
+            });
+        });
+    })
+}
+
+
+
 module.exports = {
     insert: insert,
     query: query,
     update: update,
-    querySourceNews: querySourceNews
+    querySourceNews: querySourceNews,
+    queryAll: queryAll
 }
