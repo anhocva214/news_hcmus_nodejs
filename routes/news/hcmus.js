@@ -24,8 +24,8 @@ const sendMail = async (news) => {
         port: 465,
         secure: true,
         auth: {
-            user: "ho.an@highesthabitleadership.com",
-            pass: "@nho2001vnnt",
+            user: "newstool@anho.me",
+            pass: "anho2001vnnt",
         },
     });
     // bacabeo@gmail.com, dpthienphu@gmail.com
@@ -42,7 +42,7 @@ const sendMail = async (news) => {
     }
 
     const mailOptions = {
-        from: 'ho.an@highesthabitleadership.com',
+        from: 'newstool@anho.me',
         to: toEmail,
         subject: 'News Hcmus',
         text: news
