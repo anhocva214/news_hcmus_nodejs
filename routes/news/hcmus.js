@@ -18,7 +18,7 @@ const checkIsData = (item) => {
     }
 }
 
-const sendMail = async (news) => {
+const sendMail = async (news, TIME) => {
 
     const transporter = nodemailer.createTransport({
         host: "smtp.zoho.com",
@@ -45,7 +45,7 @@ const sendMail = async (news) => {
     const mailOptions = {
         from: 'newstool@anho.me',
         to: toEmail,
-        subject: 'News Hcmus',
+        subject: 'News Hcmus || '+TIME,
         html: `<a href="${news.link}">${news.text}</a>`
     };
     const check =  checkIsData(news);
@@ -143,7 +143,7 @@ const crawlerData = () => {
                     var item = {};
                     item.text = $(newsItem[j]).text().trim();
                     item.link = 'https://www.hcmus.edu.vn/' + $(newsItem[j]).attr('href');
-                    sendMail(item);
+                    sendMail(item, TIME);
                     // console.log(item);
                 }
             }
