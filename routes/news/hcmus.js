@@ -167,7 +167,7 @@ const crawlerData = () => {
 
         handleDataNewsFeed(data);
         console.log(TIME);
-        console.log(d.toDateString());
+        console.log(d.add(1).day());
 
         // console.log(data);
     })();
