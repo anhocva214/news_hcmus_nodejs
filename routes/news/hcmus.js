@@ -111,9 +111,11 @@ const handleDataNewsFeed = async (dataNew) => {
 
 const crawlerData = () => {
     const d = new Date();
-    const month = parseInt(d.getMonth()) + 1;
+    var tomorrow = new Date(d.getTime()+1000*60*60*24);
+    // console.log(tomorrow.getDate());
+    const month = parseInt(tomorrow.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
+    const TIME = tomorrow.getDate() + "-" + month + "-" + tomorrow.getFullYear();
 
     const options = {
         uri: URL,
@@ -167,7 +169,6 @@ const crawlerData = () => {
 
         handleDataNewsFeed(data);
         console.log(TIME);
-        console.log(d.add(1).day());
 
         // console.log(data);
     })();
