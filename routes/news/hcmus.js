@@ -143,8 +143,8 @@ const crawlerData = () => {
                     var item = {};
                     item.text = $(newsItem[j]).text().trim();
                     item.link = 'https://www.hcmus.edu.vn/' + $(newsItem[j]).attr('href');
-                    sendMail(item, TIME);
-                    // console.log(item);
+                    // sendMail(item, TIME);
+                    console.log(item);
                 }
             }
         }
