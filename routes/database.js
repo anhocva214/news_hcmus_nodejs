@@ -99,12 +99,24 @@ const queryAll = (collection) => {
     })
 }
 
-
+const deleteDocument = (quertDelete, collection) => {
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db(DB);
+        var myquery = quertDelete;
+        dbo.collection(collection).deleteOne(myquery, function (err, obj) {
+            if (err) throw err;
+            console.log("1 "+collection+" deleted");
+            db.close();
+        });
+    });
+}
 
 module.exports = {
     insert: insert,
     query: query,
     update: update,
     querySourceNews: querySourceNews,
-    queryAll: queryAll
+    queryAll: queryAll,
+    deleteDocument: deleteDocument
 }

@@ -6,6 +6,7 @@ const cheerio = require("cheerio");
 const database = require('../database');
 
 
+
 var dataSendMail = [];
 const checkIsData = (item) => {
     for (var i = 0; i <= dataSendMail.length; i++) {
@@ -13,7 +14,7 @@ const checkIsData = (item) => {
             dataSendMail.push(item);
             return false;
         }
-        if (item == dataSendMail[i]) return true;
+        if (item.text == dataSendMail[i].text) return true;
     }
 }
 
@@ -33,11 +34,11 @@ const sendMail = async (news) => {
     var listEmail = await database.querySourceNews('HCMUS');
     var toEmail = "";
     for (var i = 0; i < listEmail.length; i++) {
-        if (i == listEmail.length - 1){
+        if (i == listEmail.length - 1) {
             toEmail += listEmail[i];
         }
-        else{
-            toEmail += listEmail[i]+", ";
+        else {
+            toEmail += listEmail[i] + ", ";
         }
     }
 
@@ -45,10 +46,11 @@ const sendMail = async (news) => {
         from: 'newstool@anho.me',
         to: toEmail,
         subject: 'News Hcmus',
-        text: news
+        html: `<a href="${news.link}">${news.text}</a>`
     };
-
-    if (checkIsData(news) == false) {
+    const check =  checkIsData(news);
+    // console.log('check: ', check);
+    if (check == false) {
         // console.log(toEmail);
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
@@ -57,7 +59,7 @@ const sendMail = async (news) => {
                 console.log('Email sent: ' + info.response);
             }
         });
-        // console.log("Send MAil: ", news);
+        // console.log("Send MAil: ", news.text);
     }
 
 }
@@ -68,40 +70,40 @@ const handleTimeText = (timeText) => {
     return timeText.trim();
 }
 
-const compareDataNewsFeed = (dataOld, dataNew)=>{
+const compareDataNewsFeed = (dataOld, dataNew) => {
     var indexKey = 0;
-    dataNew.forEach((value, index)=>{
+    dataNew.forEach((value, index) => {
         if (value == dataOld[0]) indexKey = index
     })
 
-    if (indexKey == 0){
-        return {status: false}
+    if (indexKey == 0) {
+        return { status: false }
     }
-    else{
+    else {
         var tempData = [];
-        for (var i=0; i<indexKey; i++){
+        for (var i = 0; i < indexKey; i++) {
             tempData.push(dataNew[i]);
-        } 
-        return {status: true, data: tempData}
+        }
+        return { status: true, data: tempData }
     }
 }
 
 const handleDataNewsFeed = async (dataNew) => {
     var newsFeedData = await database.queryAll('newsfeed');
     // console.log(newsFeedData);
-    if (newsFeedData.length == 0){
-        await database.insert({data: dataNew}, 'newsfeed');
+    if (newsFeedData.length == 0) {
+        await database.insert({ data: dataNew }, 'newsfeed');
     }
-    else{
-        newsFeedData[0].data.forEach(async (value, index)=>{
+    else {
+        newsFeedData[0].data.forEach(async (value, index) => {
             var resultCompare = compareDataNewsFeed(value, dataNew[index]);
-            if (resultCompare.status == true){
-                resultCompare.data.forEach((value)=>{
+            if (resultCompare.status == true) {
+                resultCompare.data.forEach((value) => {
                     sendMail(value);
                 })
                 var temp = [...newsFeedData[0].data];
                 temp[index] = dataNew[index];
-                await database.update({data: newsFeedData[0].data}, {data: temp}, 'newsfeed');
+                await database.update({ data: newsFeedData[0].data }, { data: temp }, 'newsfeed');
             }
         })
     }
@@ -111,7 +113,7 @@ const crawlerData = () => {
     const d = new Date();
     const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    const TIME =  d.getDate() + "-" + month + "-" + d.getFullYear();
+    const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
 
     const options = {
         uri: URL,
@@ -137,16 +139,20 @@ const crawlerData = () => {
             // console.log($(newsItem[i]).text().trim());
 
             for (var j = 0; j < newsItem.length; j++) {
-                if (handleTimeText($(timeItem[j]).text().trim()) == TIME)
-                    sendMail($(newsItem[j]).text().trim());
-                    // console.log($(newsItem[j]).text().trim())
+                if (handleTimeText($(timeItem[j]).text().trim()) == TIME) {
+                    var item = {};
+                    item.text = $(newsItem[j]).text().trim();
+                    item.link = 'https://www.hcmus.edu.vn/' + $(newsItem[j]).attr('href');
+                    sendMail(item);
+                    // console.log(item);
+                }
             }
         }
 
         const newsListFeed = $(".newsfeed");
         var data = [];
         // console.log($(newsListFeed[0]).find("span a")[0].children[0].data.trim());
-        for (var i = 1; i < newsListFeed.length; i++){
+        for (var i = 1; i < newsListFeed.length; i++) {
             var temp = [];
             var newsItemFeed = $(newsListFeed[i]).find("span a");
             // console.log(newsItemFeed[0])
@@ -158,7 +164,7 @@ const crawlerData = () => {
         }
 
         // console.log(data)
-        
+
         handleDataNewsFeed(data);
         console.log(TIME);
 
@@ -171,7 +177,7 @@ const crawlerData = () => {
 
 
 setInterval(() => {
-  crawlerData();
+    crawlerData();
 }, 3000);
 
 
