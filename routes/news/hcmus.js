@@ -49,9 +49,9 @@ const sendMail = async (news, TIME) => {
         subject: 'News Hcmus || '+TIME,
         html: `<a href="${news.link}">${news.text}</a>`
     };
-    const check =  checkIsData(news);
+    // const check =  checkIsData(news);
     // console.log('check: ', check);
-    if (check == false) {
+    if (checkIsData(news) == false) {
         // console.log(toEmail);
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
