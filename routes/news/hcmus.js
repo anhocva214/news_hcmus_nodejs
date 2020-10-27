@@ -21,6 +21,7 @@ const checkIsData = (item) => {
 const sendMail = async (news, TIME) => {
 
     const transporter = nodemailer.createTransport({
+        service: 'Gmail',
         host: "smtp.gmail.com",
         port: 587,
         secure: false,
