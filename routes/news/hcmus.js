@@ -25,7 +25,7 @@ const sendMail = async (news, TIME) => {
         port: 465,
         secure: true,
         auth: {
-            user: "newstool@anho.me",
+            user: "news@anho.me",
             pass: "anho2001vnnt",
         },
     });
@@ -42,9 +42,10 @@ const sendMail = async (news, TIME) => {
         }
     }
 
+    // console.log(toEmail);
     const mailOptions = {
-        from: 'newstool@anho.me',
-        to: toEmail,
+        from: 'news@anho.me',
+        to: 'anhocva214@gmail.com',
         subject: 'News Hcmus || '+TIME,
         html: `<a href="${news.link}">${news.text}</a>`
     };
@@ -111,11 +112,11 @@ const handleDataNewsFeed = async (dataNew) => {
 
 const crawlerData = () => {
     const d = new Date();
-    var tomorrow = new Date(d.getTime()+1000*60*60*24);
+    // var tomorrow = new Date(d.getTime()+1000*60*60*24);
     // console.log(tomorrow.getDate());
-    const month = parseInt(tomorrow.getMonth()) + 1;
+    const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    const TIME = tomorrow.getDate() + "-" + month + "-" + tomorrow.getFullYear();
+    const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
 
     const options = {
         uri: URL,
