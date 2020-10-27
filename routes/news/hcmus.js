@@ -21,11 +21,11 @@ const checkIsData = (item) => {
 const sendMail = async (news, TIME) => {
 
     const transporter = nodemailer.createTransport({
-        host: "smtp.zoho.com",
-        port: 465,
-        secure: true,
+        host: "smtp.gmail.com",
+        port: 587,
+        secure: false,
         auth: {
-            user: "news@anho.me",
+            user: "tackecon1551@gmail.com",
             pass: "anho2001vnnt",
         },
     });
@@ -44,8 +44,8 @@ const sendMail = async (news, TIME) => {
 
     // console.log(toEmail);
     const mailOptions = {
-        from: 'news@anho.me',
-        to: 'anhocva214@gmail.com',
+        from: 'tackecon1551@gmail.com',
+        to: toEmail,
         subject: 'News Hcmus || '+TIME,
         html: `<a href="${news.link}">${news.text}</a>`
     };
