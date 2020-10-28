@@ -43,11 +43,14 @@ const sendMail = async (news, TIME) => {
         }
     }
 
+    var d = new Date();
+    var clock = d.getHours()+"h "+d.getMinutes()+"m "+d.getSeconds()+"s";
+
     // console.log(toEmail);
     const mailOptions = {
         from: 'tackecon1551@gmail.com',
         to: toEmail,
-        subject: 'News Hcmus || '+TIME,
+        subject: 'News Hcmus || '+TIME+' || '+clock,
         html: `<a href="${news.link}">${news.text}</a>`
     };
     // const check =  checkIsData(news);
@@ -118,7 +121,7 @@ const crawlerData = () => {
     // console.log(tomorrow.getDate());
     const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    const TIME = 28 + "-" + month + "-" + d.getFullYear();
+    const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
 
     const options = {
         uri: URL,
