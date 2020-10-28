@@ -44,6 +44,7 @@ const sendMail = async (news, TIME) => {
     }
 
     var d = new Date();
+    d = new Date(d.getTime()+7*60*60*1000);
     var clock = d.getHours()+"h "+d.getMinutes()+"m "+d.getSeconds()+"s";
 
     // console.log(toEmail);
@@ -116,9 +117,10 @@ const handleDataNewsFeed = async (dataNew) => {
 }
 
 const crawlerData = () => {
-    const d = new Date();
-    // var tomorrow = new Date(d.getTime()+1000*60*60*24);
-    // console.log(tomorrow.getDate());
+    var d = new Date();
+    d = new Date(d.getTime()+7*60*60*1000);
+    var clock = d.getHours()+"h "+d.getMinutes()+"m "+d.getSeconds()+"s";
+    console.log(clock);
     const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
     const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
