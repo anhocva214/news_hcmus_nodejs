@@ -56,6 +56,7 @@ const sendMail = async (news, TIME) => {
         // console.log(toEmail);
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
+                dataSendMail = dataSendMail.filter(item => item.text != news.text);
                 console.log(error);
             } else {
                 console.log('Email sent: ' + info.response);
@@ -117,7 +118,7 @@ const crawlerData = () => {
     // console.log(tomorrow.getDate());
     const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
+    const TIME = 28 + "-" + month + "-" + d.getFullYear();
 
     const options = {
         uri: URL,
