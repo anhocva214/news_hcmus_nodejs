@@ -66,7 +66,7 @@ const sendMail = async (news, TIME) => {
                 console.log('Email sent: ' + info.response);
             }
         });
-        // console.log("Send MAil: ", news.text);
+        console.log("Send MAil: ", news.text);
     }
 
 }
@@ -74,7 +74,12 @@ const sendMail = async (news, TIME) => {
 const handleTimeText = (timeText) => {
     timeText = timeText.replace("(", "");
     timeText = timeText.replace(")", "");
-    return timeText.trim();
+    var time = timeText.trim();
+    if (time[0] == "0"){
+        time = time.slice(1,time.length);
+        // console.log(time);
+    }
+    return time.trim();
 }
 
 const compareDataNewsFeed = (dataOld, dataNew) => {
@@ -149,6 +154,7 @@ const crawlerData = () => {
             // console.log($(newsItem[i]).text().trim());
 
             for (var j = 0; j < newsItem.length; j++) {
+                // console.log('handle:',handleTimeText($(timeItem[j]).text().trim()));
                 if (handleTimeText($(timeItem[j]).text().trim()) == TIME) {
                     var item = {};
                     item.text = $(newsItem[j]).text().trim();
