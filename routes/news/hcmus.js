@@ -51,13 +51,16 @@ const sendMail = async (news, TIME) => {
     const mailOptions = {
         from: 'tackecon1551@gmail.com',
         to: toEmail,
+        // to: 'anhocva214@gmail.com',
         subject: 'News Hcmus || '+TIME+' || '+clock,
         html: `<a href="${news.link}">${news.text}</a>`
     };
-    // const check =  checkIsData(news);
-    // console.log('check: ', check);
-    if (checkIsData(news) == false) {
+
+    const check =  checkIsData(news);
+    console.log('check: ', check);
+    if (check == false) {
         // console.log(toEmail);
+        console.log("here")
         transporter.sendMail(mailOptions, function (error, info) {
             if (error) {
                 dataSendMail = dataSendMail.filter(item => item.text != news.text);
@@ -67,6 +70,9 @@ const sendMail = async (news, TIME) => {
             }
         });
         console.log("Send MAil: ", news.text);
+    }
+    else{
+        console.log("not here");
     }
 
 }
@@ -128,7 +134,8 @@ const crawlerData = () => {
     console.log(clock);
     const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
+    // const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
+    const TIME = "6" + "-" + "01" + "-" + d.getFullYear();
 
     const options = {
         uri: URL,
@@ -160,7 +167,7 @@ const crawlerData = () => {
                     item.text = $(newsItem[j]).text().trim();
                     item.link = 'https://www.hcmus.edu.vn/' + $(newsItem[j]).attr('href');
                     sendMail(item, TIME);
-                    // console.log(item.text);
+                    console.log(item.text);
                 }
             }
         }
