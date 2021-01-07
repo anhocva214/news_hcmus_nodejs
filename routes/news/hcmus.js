@@ -134,8 +134,12 @@ const crawlerData = () => {
     console.log(clock);
     const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    const TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
+    var TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
     // const TIME = "6" + "-" + "01" + "-" + d.getFullYear();
+
+    if (parseInt(d.getDate()) < 10){
+        TIME = "0" + d.getDate() + "-" + month + "-" + d.getFullYear();
+    }
 
     const options = {
         uri: URL,
