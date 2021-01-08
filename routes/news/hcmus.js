@@ -50,8 +50,8 @@ const sendMail = async (news, TIME) => {
     // console.log(toEmail);
     const mailOptions = {
         from: 'tackecon1551@gmail.com',
-        to: toEmail,
-        // to: 'anhocva214@gmail.com',
+        // to: toEmail,
+        to: 'anhocva214@gmail.com',
         subject: 'News Hcmus || '+TIME+' || '+clock,
         html: `<a href="${news.link}">${news.text}</a>`
     };
@@ -81,10 +81,18 @@ const handleTimeText = (timeText) => {
     timeText = timeText.replace("(", "");
     timeText = timeText.replace(")", "");
     var time = timeText.trim();
-    if (time[0] == "0"){
-        time = time.slice(1,time.length);
-        // console.log(time);
+    var arr_time = time.split("-");
+    if (arr_time[0][0] == "0"){
+        arr_time[0] = arr_time[0][1];
     }
+    if (arr_time[1][0] == "0"){
+        arr_time[1] = arr_time[1][1];
+    }
+    // if (time[0] == "0"){
+    //     time = time.slice(1,time.length);
+    //     // console.log(time);
+    // }
+    time  = arr_time[0]+"-"+arr_time[1]+"-"+arr_time[2];
     return time.trim();
 }
 
@@ -134,12 +142,12 @@ const crawlerData = () => {
     console.log(clock);
     const month = parseInt(d.getMonth()) + 1;
     const URL = `https://www.hcmus.edu.vn/sinh-vien`;
-    var TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
-    // const TIME = "6" + "-" + "01" + "-" + d.getFullYear();
+    // var TIME = d.getDate() + "-" + month + "-" + d.getFullYear();
+    const TIME = "8" + "-" + "1" + "-" + d.getFullYear();
 
-    if (parseInt(d.getDate()) < 10){
-        TIME = "0" + d.getDate() + "-" + month + "-" + d.getFullYear();
-    }
+    // if (parseInt(d.getDate()) < 10){
+    //     TIME = "0" + d.getDate() + "-" + month + "-" + d.getFullYear();
+    // }
 
     const options = {
         uri: URL,
